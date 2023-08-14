@@ -11,6 +11,60 @@ class Channel:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
         self.channel_id = channel_id
 
+    def __str__(self):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        channel = youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
+        return f"{channel['items'][0]['snippet']['title']} (https://www.youtube.com/channel/{self.channel_id})"
+
+    def __add__(self, other):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        first_channel = youtube.channels().list(id=self.channel_id, part='statistics').execute()
+        second_channel = youtube.channels().list(id=other.channel_id, part='statistics').execute()
+        return int(first_channel['items'][0]['statistics']['subscriberCount']) + \
+            int(second_channel['items'][0]['statistics']['subscriberCount'])
+
+    def __sub__(self, other):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        first_channel = youtube.channels().list(id=self.channel_id, part='statistics').execute()
+        second_channel = youtube.channels().list(id=other.channel_id, part='statistics').execute()
+        return int(first_channel['items'][0]['statistics']['subscriberCount']) - \
+            int(second_channel['items'][0]['statistics']['subscriberCount'])
+
+    def __lt__(self, other):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        first_channel = youtube.channels().list(id=self.channel_id, part='statistics').execute()
+        second_channel = youtube.channels().list(id=other.channel_id, part='statistics').execute()
+        return int(first_channel['items'][0]['statistics']['subscriberCount']) < \
+            int(second_channel['items'][0]['statistics']['subscriberCount'])
+
+    def __le__(self, other):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        first_channel = youtube.channels().list(id=self.channel_id, part='statistics').execute()
+        second_channel = youtube.channels().list(id=other.channel_id, part='statistics').execute()
+        return int(first_channel['items'][0]['statistics']['subscriberCount']) <= \
+            int(second_channel['items'][0]['statistics']['subscriberCount'])
+
+    def __gt__(self, other):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        first_channel = youtube.channels().list(id=self.channel_id, part='statistics').execute()
+        second_channel = youtube.channels().list(id=other.channel_id, part='statistics').execute()
+        return int(first_channel['items'][0]['statistics']['subscriberCount']) > \
+            int(second_channel['items'][0]['statistics']['subscriberCount'])
+
+    def __ge__(self, other):
+        api_key: str = os.getenv("API_KEY")
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        first_channel = youtube.channels().list(id=self.channel_id, part='statistics').execute()
+        second_channel = youtube.channels().list(id=other.channel_id, part='statistics').execute()
+        return int(first_channel['items'][0]['statistics']['subscriberCount']) >= \
+            int(second_channel['items'][0]['statistics']['subscriberCount'])
+
     @property
     def channel_id(self):
         return self.__channel_id
@@ -43,8 +97,6 @@ class Channel:
     @property
     def url(self):
         return f"https://www.youtube.com/channel/{self.channel_id}"
-
-
 
     @property
     def description(self):
