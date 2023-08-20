@@ -1,11 +1,13 @@
 import os
 from googleapiclient.discovery import build
 
+API_KEY = os.getenv('API_KEY')
+
 
 class Video:
 
     def __init__(self, video_id):
-        api_key: str = os.getenv('API_KEY')
+        api_key: str = API_KEY
         youtube = build('youtube', 'v3', developerKey=api_key)
         video_response = youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
                                                id=video_id
@@ -18,6 +20,10 @@ class Video:
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_service(cls):
+        return build('youtube', 'v3', developerKey=API_KEY)
 
 
 class PLVideo(Video):
