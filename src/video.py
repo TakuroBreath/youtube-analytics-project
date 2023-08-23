@@ -13,13 +13,20 @@ class Video:
                                                id=video_id
                                                ).execute()
         self.video_id = video_id
-        self.name = video_response['items'][0]['snippet']['title']
-        self.video_url = f"https://www.youtube.com/watch?v={video_id}"
-        self.view_count = video_response['items'][0]['statistics']['viewCount']
-        self.like_count = video_response['items'][0]['statistics']['likeCount']
+        try:
+            self.title = video_response['items'][0]['snippet']['title']
+        except IndexError:
+            self.title = None
+            self.video_url = None
+            self.view_count = None
+            self.like_count = None
+        else:
+            self.video_url = f"https://www.youtube.com/watch?v={video_id}"
+            self.view_count = video_response['items'][0]['statistics']['viewCount']
+            self.like_count = video_response['items'][0]['statistics']['likeCount']
 
     def __str__(self):
-        return self.name
+        return self.title
 
     @classmethod
     def get_service(cls):
